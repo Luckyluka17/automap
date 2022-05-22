@@ -50,7 +50,7 @@ exit : Quitte l'application""")
                 print(f"Erreur \"map\": une carte a ce nom existe déjà. Pour la supprimer, utilisez la commande \"delete {createdmap[1]}\"")
         else:
             print("Erreur \"args\": la commande 'create' doit être suivie uniquement d'un nom de carte.")
-    elif cmd == "list maps ":
+    elif cmd == "list maps":
         if len(maplist) != 0:
             for i in maplist:
                 ind = int(maplist.index(i))
@@ -171,5 +171,5 @@ exit : Quitte l'application""")
 - Carte : Esri""")
     else:
         errorcmd = cmd.split(" ")
-        print(f"Erreur \"Cmd\": la commande {errorcmd[0]} n'existe pas ou .")
+        print(f"Erreur \"Cmd\": la commande {errorcmd[0]} n'existe pas ou est mal écrit.")
     
