@@ -12,7 +12,7 @@ except ImportError:
 
 version = "0.1 alpha"
 
-os.system(f"Automap v{version}")
+os.system(f"title Automap v{version}")
 print(f"""Automap [Version {version}]
 Created by Luckyluka17
 Powered by Folium
@@ -22,6 +22,34 @@ maplist = []
 selectedmap = []
 selectedmap1 = ""
 listpoints = []
+colorterminal = "5"
+colorpoints = "blue"
+
+if os.path.exists("config.txt"):
+    with open("config.txt", "r") as f:
+        data = f.read().replace(" ", "").split("-")
+        colorterminal = str(data[0])
+        colorpoints = str(data[1])
+        f.close()
+        del data
+else:
+    with open("config.txt", "w") as f:
+        f.write(f"{colorterminal}-{colorpoints}")
+        f.close()
+
+
+if colorterminal == "1":
+    os.system("color 4")
+elif colorterminal == "2":
+    os.system("color 2")
+elif colorterminal == "3":
+    os.system("color 1")
+elif colorterminal == "4":
+    os.system("color 6")
+elif colorterminal == "5":
+    os.system("color 7")
+else:
+    os.system("color 7")
 
 while True:
     cmd = str(input("=>"))
@@ -37,6 +65,8 @@ list markers : Affiche la liste des points sur la carte séléctionnée
 addmarker : Ajoute un marqueur
 delmarker : Supprime un marqueur
 credits : Affiche les crédits
+settings : Affiche le menu des paramètres
+clear : Efface le contenu de la console
 exit : Quitte l'application""")
     elif cmd == "exit":
         exit()
@@ -116,9 +146,15 @@ exit : Quitte l'application""")
             if selectedmap1 != "":
                 print(f"Sauvegarde de {selectedmap1} en cours...")
                 for i in listpoints:
-                    folium.Marker(location=i).add_to(carte)
-                carte.save(f"{selectedmap1}.html")
-                print(f"Sauvegarde de {selectedmap1} terminée.")
+                    try:
+                        folium.Marker(location=i, icon=folium.Icon(color=colorpoints)).add_to(carte)
+                    except:
+                        print("Erreur \"marker\": un marqueur n'a pas pu être ajouté à la carte.")
+                try:
+                    carte.save(f"{selectedmap1}.html")
+                    print(f"Sauvegarde de {selectedmap1} terminée.")
+                except:
+                    print("Erreur \"save\": la carte n'a pas pu être sauvegardée.")
             else:
                 print("Erreur \"map\": aucune carte n'est sélectionnée. Pour en sélectionner une, utilisez la commande \"select\"")
         else:
@@ -170,6 +206,51 @@ exit : Quitte l'application""")
         print("""- Développeur : Luckyluka17
 - Version : {version}
 - Carte : Esri""")
+    elif cmd == "settings":
+        print("""Paramètres d'automap (pour séléctionner le paramètre, entrez le numéro du menu, et pour quitter, appuyez juste sur entrer.) :
+1 - Couleur de la console
+2 - Couleur des marqueurs""")
+        setting=str(input("=>"))
+        if setting == "1":
+            print("""Couleurs disponibles :
+1 - Rouge
+2 - Vert
+3 - Bleu
+4 - Jaune
+5 - Blanc""")
+            colorterminal=str(input("=>"))
+            if colorterminal == "1":
+                os.system("color 4")
+            elif colorterminal == "2":
+                os.system("color 2")
+            elif colorterminal == "3":
+                os.system("color 1")
+            elif colorterminal == "4":
+                os.system("color 6")
+            elif colorterminal == "5":
+                os.system("color 7")
+
+            with open("config.txt", "w") as f:
+                f.write(f"{colorterminal}-{colorpoints}")
+                f.close()
+        elif setting == "2":
+            print("""Couleurs disponibles :
+1 - Rouge
+2 - Vert
+3 - Bleu""")
+            colorpoints=str(input("=>"))
+            if colorpoints == "1":
+                colorpoints = "red"
+            elif colorpoints == "2":
+                colorpoints = "green"
+            elif colorpoints == "3":
+                colorpoints = "blue"
+
+            with open("config.txt", "w") as f:
+                f.write(f"{colorterminal}-{colorpoints}")
+                f.close()
+
+
     else:
         errorcmd = cmd.split(" ")
         print(f"Erreur \"Cmd\": la commande {errorcmd[0]} n'existe pas ou est mal écrit.")
