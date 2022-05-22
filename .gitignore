@@ -20,3 +20,4 @@ build/main/Tree-02.toc
 build/main/warn-main.txt
 build/main/xref-main.html
 *.exe
+src/config.txt
