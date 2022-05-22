@@ -12,6 +12,7 @@ except ImportError:
 
 version = "0.1 alpha"
 
+os.system(f"Automap v{version}")
 print(f"""Automap [Version {version}]
 Created by Luckyluka17
 Powered by Folium

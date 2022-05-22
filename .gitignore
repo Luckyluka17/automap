@@ -1,3 +1,22 @@
 
 src/__pycache__/main.cpython-310.pyc
 src/output/main.exe
+src/build/main/base_library.zip
+src/build/main/main.exe.manifest
+src/main.spec
+*.spec
+src/script2exe.bat
+build/main/Analysis-00.toc
+build/main/base_library.zip
+build/main/EXE-00.toc
+build/main/main.exe.manifest
+build/main/main.pkg
+build/main/PKG-00.toc
+build/main/PYZ-00.pyz
+build/main/PYZ-00.toc
+build/main/Tree-00.toc
+build/main/Tree-01.toc
+build/main/Tree-02.toc
+build/main/warn-main.txt
+build/main/xref-main.html
+*.exe
