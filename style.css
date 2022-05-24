@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+html {
+    background-color: gray;
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    scroll-behavior: smooth;
+    color: rgb(74, 74, 74);
+    background-image: url('img/background.png');
+}
+
+nav {
+    background-color: #333;
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    overflow: auto;
+    top: 0;
+    left: 0;
+    padding: 10px;
+}
+
+body {
+    color: rgb(74, 74, 74);
+}
+
+.navlinks {
+    float: right;
+    vertical-align: middle;
+    overflow: auto;
+    position: relative;
+    color: white;
+    margin-top: 10px;
+    font-size: 25px;
+    font-family: 'Lato', sans-serif;
+    transition: all 0.6s ease-in-out;
+}
+
+.navlinks a:hover {
+    text-shadow: 0 0 10px white;
+    transition: all 0.4s ease-in-out;
+}
+
+.navlinks a {
+    margin-right: 20px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.4s ease-in-out;
+}
+
+section {
+    margin-top: 50px;
+    color: rgb(74, 74, 74);
+    font-family: 'Lato', sans-serif;
+}
+
+button {
+    padding: 9px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    background-color: #333;
+    font-size: 20px;
+    cursor: pointer;
+    overflow: auto;
+    transition: all 0.4s ease-in-out;
+}
+
+button:hover {
+    background-color: #333;
+    color: white;
+    box-shadow: 0 0 15px white;
+    transform: translateY(-10px);
+    transition: all 0.4s ease-in-out;
+}
+
+#icons {
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 20px;
+    vertical-align: middle;
+    position: absolute;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+h3 {
+    font-size: 27px;
+}
+
+p {
+    font-size: 20px;
+}

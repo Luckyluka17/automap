@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Automap</title>
+    <link rel="icon" type="image/ico" href="img/icon.ico">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="style.css">
+</head>
+<nav>
+    <img src="img/icon.ico" width="3%" style="margin-left: 30px;">
+    <div class="navlinks">
+        <a href="#" >Accueil</a>
+        <a href="#presentation">Présentation</a>
+        <a href="#downloads">Téléchargements</a>
+    </div>
+</nav>
+<body>
+<center>
+    <section id="banner" style="margin-top: 130px;">
+    
+        <h1>Automap</h1>
+        <p>Générez des cartes Open Street Map avec vue satellite gratuitement.</p>
+        <br/>
+        <button type="button" style="margin-right: 20px;"><i class="fi fi-rr-download">  Télécharger pour Windows</i></button>
+        <button type="button"><i class="fi fi-brands-github">  Dépôt github</i></button>
+    </section>
+    <section id="presentation" style="margin-top: 85px;">
+        <h1>Presentation du logiciel</h1>
+        <p>Automap est un logiciel libre et gratuit qui permet de générer des cartes Open Street Map avec une vue satellite gratuitement, à l'aide<br>
+            d'un terminal simple d'utilisation. Le logiciel fonctionne avec le module folium, sous Python 3.10. Pour ceux qui ont du mal, vous<br>
+            pouvez retrouver le wiki sur le dépôt github, ou en cliquant <a href="https://github.com/Luckyluka17/automap/wiki" target="_blank">ici</a>.</p>
+        <br/>
+        <h1>Exemple de carte</h1>
+        <iframe src="src/carte_exemple.html" width="1000" height="800" style="border-radius: 5px; box-shadow: 0 0 10px black;"></iframe>
+    </section>
+    <section id="downloads">
+        <h1>Télécharger Automap
+        <p>Téléchargement rapide et sécurisé.</p></h1>
+        <br/>
+        <a href="https://objects.githubusercontent.com/github-production-release-asset-2e65be/494856148/a033c342-2ef0-4aa8-b68c-12883c32d8cb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20220524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220524T151229Z&X-Amz-Expires=300&X-Amz-Signature=9dc11c98e06e8abdcee87d2004524651a19c12ffb0ecc46ce8439fc2c912270d&X-Amz-SignedHeaders=host&actor_id=63603989&key_id=0&repo_id=494856148&response-content-disposition=attachment%3B%20filename%3Dautomap.exe&response-content-type=application%2Foctet-stream"><button type="button" style="margin-right: 20px;">Télécharger le logiciel</button></a>
+        <a href="src/main.py" download="main.py"><button type="button">Télécharger le script</button></a>
+    </section>
+    <section id="footer" style="margin-top: 150px;">
+        <p>Automap - Projet réalisé par Luckyluka17.</p>
+    </section>
+</center>
+</body>
+</html>
