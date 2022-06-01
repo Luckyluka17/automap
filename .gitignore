@@ -4,6 +4,7 @@ src/output/main.exe
 src/build/main/base_library.zip
 src/build/main/main.exe.manifest
 src/main.spec
+src/script2exe data/
 *.spec
 src/script2exe.bat
 build/main/Analysis-00.toc
