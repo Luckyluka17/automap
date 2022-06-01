@@ -1,3 +1,8 @@
+"""
+Développé par Luckyluka17.
+Logiciel gratuit et open source.
+"""
+
 import os
 
 print("Chargement des modules...")
@@ -10,7 +15,14 @@ except ImportError:
     os.system("pause >nul")
     exit()
 
-version = "0.1 alpha"
+version = "0.2"
+
+if not os.name == "nt":
+    os.system("clear")
+    print("""Nous avons detecté que l'application s'éxécute sur un système non windows.
+    Il est possible que certaines commandes ne fonctionnent pas comme prévu.
+    (une version linux est en cours de développement)
+""")
 
 os.system(f"title Automap v{version}")
 print(f"""Automap [Version {version}]
@@ -62,6 +74,7 @@ delete : Supprime une carte
 save : Sauvegarde la carte
 list maps : Affiche la liste des cartes créées
 list markers : Affiche la liste des points sur la carte séléctionnée
+list icons : Affiche la liste des icones pour les points
 addmarker : Ajoute un marqueur
 delmarker : Supprime un marqueur
 credits : Affiche les crédits
@@ -147,7 +160,10 @@ exit : Quitte l'application""")
                 print(f"Sauvegarde de {selectedmap1} en cours...")
                 for i in listpoints:
                     try:
-                        folium.Marker(location=i, icon=folium.Icon(color=colorpoints)).add_to(carte)
+                        if len(i) == 3:
+                            folium.Marker(location=[i[0], i[1]], icon=folium.Icon(color=colorpoints, prefix='glyphicon', icon=i[2])).add_to(carte)
+                        else:
+                            folium.Marker(location=[i[0], i[1]], icon=folium.Icon(color=colorpoints)).add_to(carte)
                     except:
                         print("Erreur \"marker\": un marqueur n'a pas pu être ajouté à la carte.")
                 try:
@@ -163,10 +179,13 @@ exit : Quitte l'application""")
         os.system("cls")
     elif cmd.startswith("addmarker"):
         addpin = cmd.replace(",", "").split(" ")
-        if len(addpin) == 3:
+        if len(addpin) == 3 or len(addpin) == 4:
             if selectedmap1 in maplist:
                 if selectedmap1 != "":
-                    listpoints.append([addpin[1], addpin[2]])
+                    if len(addpin) == 4:
+                        listpoints.append([addpin[1], addpin[2], addpin[3]])
+                    else:
+                        listpoints.append([addpin[1], addpin[2]])
                     print("Marqueur ajouté.")
                 else:
                     print("Erreur \"map\": aucune carte n'est sélectionnée. Pour en sélectionner une, utilisez la commande \"select\"")
@@ -174,12 +193,41 @@ exit : Quitte l'application""")
                 print("Erreur \"map\": aucune carte n'est sélectionnée.")
         else:
             print("Erreur \"args\": la commande 'addmarker' doit être suivie de coordonnées.")
+    elif cmd == "addline":
+        if selectedmap1 in maplist:
+            if selectedmap1 != "":
+                markersline = []
+                ch = "a"
+                print("Pour créer une ligne, vous devez entrer plusieurs coordonnées. Pour terminer la ligne, appuyez sur entrer.")
+                while ch != "":
+                    ch = input("addline=>")
+                    if len(ch.replace(",", "").split(" ")) == 2:
+                        if ch != "":
+                            memory = ch.replace(",", "").split(" ")
+                            markersline.append((memory[0], memory[1]))
+                    elif ch != "":
+                        print("Erreur \"marker\": les coordonnées entrées ne sont pas valides.")
+                    else:
+                        try:
+                            folium.PolyLine(markersline, color=colorpoints, weight=2.5, opacity=0.8).add_to(carte)
+                            print("Ligne créée.")
+                        except RecursionError:
+                            print("Erreur \"line\": la ligne doit avoir 5 points ou plus.")
+                        except:
+                            print("Erreur \"line\": la ligne n'a pas pu être créée.")
+            else:
+                print("Erreur \"map\": aucune carte n'est sélectionnée. Pour en sélectionner une, utilisez la commande \"select\"")
+        else:
+            print("Erreur \"map\": aucune carte n'est sélectionnée.")
     elif cmd == "list markers":
         if selectedmap1 in maplist:
                 if selectedmap1 != "":
                     if len(listpoints) != 0:
                         for i in listpoints:
-                            print(f"1 - {i[0]}, {i[1]}")
+                            try:
+                                print(f"- {i[0]}, {i[1]} | Icone : {i[2]}")
+                            except IndexError:
+                                print(f"- {i[0]}, {i[1]}")
                     else:
                         print("Aucun marqueur n'a été ajouté sur la carte séléctionnée.")
                 else:
@@ -188,12 +236,16 @@ exit : Quitte l'application""")
             print("Erreur \"map\": aucune carte n'est sélectionnée.")
     elif cmd.startswith("delmarker"):
         addpin = cmd.replace(",", "").split(" ")
-        if len(addpin) == 3:
+        if len(addpin) == 3 or len(addpin) == 4:
             if selectedmap1 in maplist:
                 if selectedmap1 != "":
                     try:
+                        if len(addpin) == 3:
+                            listpoints.remove([addpin[1], addpin[2]])
+                        else:
+                            listpoints.remove([addpin[1], addpin[2], addpin[3]])
+
                         print("Point supprimé.")
-                        listpoints.remove([addpin[1], addpin[2]])
                     except:
                         print("Erreur \"marker\": ce point n'existe pas.")
                 else:
@@ -201,7 +253,7 @@ exit : Quitte l'application""")
             else:
                 print("Erreur \"map\": aucune carte n'est sélectionnée.")
         else:
-            print("Erreur \"args\": la commande 'addmarker' doit être suivie de coordonnées.")
+            print("Erreur \"args\": la commande 'delmarker' doit être suivie de coordonnées (et d'un nom de logo si vous en avez mis un).")
     elif cmd == "credits":
         print("""- Développeur : Luckyluka17
 - Version : {version}
@@ -249,8 +301,9 @@ exit : Quitte l'application""")
             with open("config.txt", "w") as f:
                 f.write(f"{colorterminal}-{colorpoints}")
                 f.close()
-
-
+    elif cmd == "list icons":
+        print("""La liste des icons pour les points est disponible à cette adresse :
+https://getbootstrap.com/docs/3.3/components/""")
     else:
         errorcmd = cmd.split(" ")
         print(f"Erreur \"Cmd\": la commande {errorcmd[0]} n'existe pas ou est mal écrit.")
