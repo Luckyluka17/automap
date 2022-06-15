@@ -1,0 +1,4 @@
+{
+    "latest-version": "0.2",
+    "dependencies": ["folium", "beautifulsoup4", "requests", "colorama"]
+}
