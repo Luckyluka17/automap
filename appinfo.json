@@ -3,5 +3,4 @@
     "disable-update-check": true,
     "dependencies": ["folium", "beautifulsoup4", "requests", "colorama"],
     "disable-app": true
-
 }
