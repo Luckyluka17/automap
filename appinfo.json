@@ -1,6 +1,6 @@
 {
     "latest-version": "0.3",
-    "disable-update-check": true,
+    "disable-update-check": false,
     "dependencies": ["folium", "beautifulsoup4", "requests", "colorama"],
     "disable-app": false
 }

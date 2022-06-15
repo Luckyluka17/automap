@@ -31,7 +31,7 @@ except:
     os.system("pause")
     exit()
 
-version = "0.2"
+version = "0.3"
 
 os.system("cls")
 print(Fore.YELLOW + "Vérification des mises à jour...")
