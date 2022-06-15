@@ -3,6 +3,8 @@ Développé par Luckyluka17.
 Logiciel gratuit et open source.
 """
 import os
+import json
+import webbrowser
 
 print("Chargement des modules...")
 try:
@@ -13,11 +15,13 @@ try:
     init(autoreset=True)
     os.system("cls")
 except ImportError:
+    os.system("cls")
     print("Un ou plusieurs ne sont pas installés, installation automatique...")
-    os.system("pip install folium")
-    os.system("pip install beautifulsoup4")
-    os.system("pip install requests")
-    os.system("pip install colorama")
+    with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+        data = json.loads(r.text)
+        for i in data['dependencies']:
+            os.system(f"pip install {i}")
+        del data
     os.system("cls")
     print("Installation terminée.\nRedémarrez le programme pour appliquer les modifications.")
     os.system("pause")
@@ -28,6 +32,21 @@ except:
     exit()
 
 version = "0.2"
+
+os.system("cls")
+print(Fore.YELLOW + "Vérification des mises à jour...")
+with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+    data = json.loads(r.text)
+    if data["latest-version"] != version and data["disable-update-check"] == False:
+        os.system("cls")
+        print(Fore.RED + "Mise à jour disponible !")
+        print("Version actuelle : " + version)
+        print("Version disponible : " + data["latest-version"])
+        print("Voulez-vous télécharger la mise à jour ? (O/N)")
+        if input(">").upper() == "O":
+            webbrowser.open(f"https://github.com/automap-organization/automap/releases/tag/{data['latest-version']}")
+    
+    os.system("cls")
 
 if not os.name == "nt":
     os.system("clear")
@@ -48,6 +67,14 @@ selectedmap1 = ""
 listpoints = []
 colorterminal = "5"
 colorpoints = "blue"
+
+if data["disable-app"] == True:
+    os.system("cls")
+    print(Fore.RED + "L'application est désactivée temporairement.")
+    print("Pour en savoir plus, veuillez visiter le site.")
+    os.system("pause")
+    exit()
+
 
 if os.path.exists("config.txt"):
     with open("config.txt", "r") as f:
