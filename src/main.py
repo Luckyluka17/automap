@@ -7,6 +7,8 @@ import json
 import webbrowser
 
 print("Chargement des modules...")
+os.system("title Automap - Démarrage...")
+
 try:
     import folium
     from bs4 import BeautifulSoup
@@ -31,7 +33,7 @@ except:
     os.system("pause")
     exit()
 
-version = "0.2"
+version = "0.3"
 
 os.system("cls")
 print(Fore.YELLOW + "Vérification des mises à jour...")
@@ -76,16 +78,20 @@ if data["disable-app"] == True:
     exit()
 
 
-if os.path.exists("config.txt"):
-    with open("config.txt", "r") as f:
-        data = f.read().replace(" ", "").split("-")
-        colorterminal = str(data[0])
-        colorpoints = str(data[1])
+if os.path.exists("config.json"):
+    with open("config.json", "r") as f:
+        data1 = json.loads(f.read())
+        colorterminal = str(data1["colorterminal"])
+        colorpoints = str(data1["colorpoints"])
         f.close()
-        del data
+        del data1
 else:
-    with open("config.txt", "w") as f:
-        f.write(f"{colorterminal}-{colorpoints}")
+    with open("config.json", "w") as f:
+        settingdata = {
+            "colorterminal": colorterminal,
+            "colorpoints": colorpoints
+        }
+        f.write(json.dumps(settingdata))
         f.close()
 
 
@@ -322,8 +328,12 @@ exit : Quitte l'application""")
             elif colorterminal == "5":
                 os.system("color 7")
 
-            with open("config.txt", "w") as f:
-                f.write(f"{colorterminal}-{colorpoints}")
+            with open("config.json", "w") as f:
+                settingdata = {
+                    "colorterminal": colorterminal,
+                    "colorpoints": colorpoints
+                }
+                f.write(json.dumps(settingdata))
                 f.close()
         elif setting == "2":
             print("""Couleurs disponibles :
@@ -338,8 +348,12 @@ exit : Quitte l'application""")
             elif colorpoints == "3":
                 colorpoints = "blue"
 
-            with open("config.txt", "w") as f:
-                f.write(f"{colorterminal}-{colorpoints}")
+            with open("config.json", "w") as f:
+                settingdata = {
+                    "colorterminal": colorterminal,
+                    "colorpoints": colorpoints
+                }
+                f.write(json.dumps(settingdata))
                 f.close()
     elif cmd == "list icons":
         print("Icones disponibles :\n")
