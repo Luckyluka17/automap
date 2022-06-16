@@ -2,5 +2,6 @@
     "latest-version": "0.3",
     "disable-update-check": false,
     "dependencies": ["folium", "beautifulsoup4", "requests", "colorama"],
-    "disable-app": false
+    "disable-app": false,
+    "plugins_availables": ["save_map_from_automap_gui"]
 }
