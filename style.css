@@ -97,3 +97,18 @@ h3 {
 p {
     font-size: 20px;
 }
+
+.cards {
+    margin-right: 20px;
+    border-radius: 5px;
+    border: none;
+    width: 18%;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+}
+
+.cards:hover {
+    box-shadow: 0 0 15px black;
+    transform: translateY(-10px);
+    transition: all 0.4s ease-in-out;
+}
