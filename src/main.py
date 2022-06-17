@@ -370,13 +370,13 @@ exit : Quitte l'application""")
             with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
                 plugins = json.loads(r.text)["plugins_availables"]
                 if plugin[2] in plugins:
-                    print(Fore.RED + "Avertissement : ne téléchargez pas des plugins qui ne proviennent pas de cette commande.")
+                    print(Fore.RED + "Avertissement : ne téléchargez pas des plugins qui ne proviennent pas de cette commande.\n")
                     try:
                         os.mkdir("Plugins")
                     except FileExistsError:
                         pass
                     print(Fore.YELLOW + "Téléchargement du plugin en cours...")
-                    os.system(f"curl https://raw.githubusercontent.com/automap-organization/automap/main/src/plugins/{plugin[2]}.py -o \"%cd%\Plugins\{plugin[2]}.py\"")
+                    os.system(f"curl https://raw.githubusercontent.com/automap-organization/automap/main/src/plugins/{plugin[2]}.py -o \"%cd%\Plugins\{plugin[2]}.py\" >nul")
                     print(Fore.GREEN + "Plugin téléchargé.")
                 else:
                     print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas.")
