@@ -5,6 +5,7 @@ Logiciel gratuit et open source.
 import os
 import json
 import webbrowser
+import codecs
 
 print("Chargement des modules...")
 os.system("title Automap - Démarrage...")
@@ -33,7 +34,7 @@ except:
     os.system("pause")
     exit()
 
-version = "0.3"
+version = "0.4"
 
 os.system("cls")
 print(Fore.YELLOW + "Vérification des mises à jour...")
@@ -109,7 +110,7 @@ else:
     os.system("color 7")
 
 while True:
-    cmd = str(input("=>"))
+    cmd = str(input("=>")).lower()
 
     if cmd == "help":
         print("""help : Affiche l'aide
@@ -123,8 +124,10 @@ list icons : Affiche la liste des icones pour les points
 addmarker : Ajoute un marqueur
 delmarker : Supprime un marqueur
 credits : Affiche les crédits
-patch-notes : Affiche les notes de développement
 settings : Affiche le menu des paramètres
+plugin download : Télécharge un plugin
+plugin start : Démarre un plugin
+plugin info : Affiche les informations d'un plugin
 clear : Efface le contenu de la console
 exit : Quitte l'application""")
     elif cmd == "exit":
@@ -301,7 +304,7 @@ exit : Quitte l'application""")
         else:
             print(Fore.RED + "Erreur \"args\": la commande 'delmarker' doit être suivie de coordonnées (et d'un nom de logo si vous en avez mis un).")
     elif cmd == "credits":
-        print("""- Développeur : Luckyluka17
+        print(f"""- Développeur : Luckyluka17
 - Version : {version}
 - Carte : Esri""")
     elif cmd == "settings":
@@ -361,12 +364,52 @@ exit : Quitte l'application""")
             soup = BeautifulSoup(r.content, "html.parser")
             for i in soup.find_all(class_="bs-glyphicons-list"):
                 print(i.text.replace("glyphicon-", "").replace("glyphicon", "").replace("     ", "\n").replace("    ", ""))
-    elif cmd == "patch-notes":
-        print(Fore.YELLOW + f"""Quoi de neuf sur la version {version} ?:
-- Ajout de la commande 'addline'
-- Ajout de la commande 'list icons'
-- Ajout de la commande 'patch-notes'
-- Ajout de coleur dans l'interface""")
+    elif cmd.startswith("plugin download"):
+        plugin = cmd.split(" ")
+        if len(plugin) == 3:
+            with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+                plugins = json.loads(r.text)["plugins_availables"]
+                if plugin[2] in plugins:
+                    print(Fore.RED + "Avertissement : ne téléchargez pas des plugins qui ne proviennent pas de cette commande.")
+                    try:
+                        os.mkdir("Plugins")
+                    except FileExistsError:
+                        pass
+                    print(Fore.YELLOW + "Téléchargement du plugin en cours...")
+                    os.system(f"curl https://raw.githubusercontent.com/automap-organization/automap/main/src/plugins/{plugin[2]}.py -o \"%cd%\Plugins\{plugin[2]}.py\"")
+                    print(Fore.GREEN + "Plugin téléchargé.")
+                else:
+                    print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas.")
+        else:
+            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin download\" doit être suivie du nom du plugin.")
+    elif cmd.startswith("plugin start"):
+        plugin = cmd.split(" ")
+        if len(plugin) == 3:
+            if os.path.exists(f"Plugins\\{plugin[2]}.py"):
+                print(Fore.YELLOW + "Démarrage du plugin en cours...")
+                os.system(f"python \"%cd%\Plugins\\{plugin[2]}.py\"")
+                print(Fore.YELLOW + "Le plugin a fini son exécution.")
+            else:
+                print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas ou n'est pas installé.")
+        else:
+            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin start\" doit être suivie du nom du plugin.")
+    elif cmd.startswith("plugin info"):
+        plugin = cmd.split(" ")
+        if len(plugin) == 3:
+            if os.path.exists(f"Plugins\\{plugin[2]}.py"):
+                print("Informations sur le plugin :")
+                with codecs.open(f"Plugins\\{plugin[2]}.py", "r", "utf-8") as f:
+                    info = f.read().split("\"\"\"")
+                    print(info[1])
+            else:
+                print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas ou n'est pas installé.")
+        else:
+            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin start\" doit être suivie du nom du plugin.") 
+    elif cmd == "plugin list":
+        print("Plugins installés :")
+        for i in os.listdir("Plugins"):
+            if i.endswith(".py"):
+                print(i.replace(".py", ""))
     else:
         errorcmd = cmd.split(" ")
         print(f"Erreur \"Cmd\": la commande {errorcmd[0]} n'existe pas ou est mal écrite.")
