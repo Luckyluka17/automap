@@ -47,7 +47,7 @@ with requests.get("https://raw.githubusercontent.com/automap-organization/automa
         print("Version disponible : " + data["latest-version"])
         print("Voulez-vous télécharger la mise à jour ? (O/N)")
         if input(">").upper() == "O":
-            webbrowser.open(f"https://github.com/automap-organization/automap/releases/tag/{data['latest-version']}")
+            webbrowser.open(f"https://github.com/automap-organization/automap/releases/download/{data['latest-version']}/automap.exe")
     
     os.system("cls")
 
@@ -121,13 +121,16 @@ save : Sauvegarde la carte
 list maps : Affiche la liste des cartes créées
 list markers : Affiche la liste des points sur la carte séléctionnée
 list icons : Affiche la liste des icones pour les points
+list plugins : Affiche la liste des plugins installés
 addmarker : Ajoute un marqueur
 delmarker : Supprime un marqueur
 credits : Affiche les crédits
 settings : Affiche le menu des paramètres
-plugin download : Télécharge un plugin
+plugin install : Télécharge et installe un plugin
+plugin uninstall : Supprime un plugin
 plugin start : Démarre un plugin
 plugin info : Affiche les informations d'un plugin
+check update : Vérifie les mises à jour
 clear : Efface le contenu de la console
 exit : Quitte l'application""")
     elif cmd == "exit":
@@ -364,7 +367,7 @@ exit : Quitte l'application""")
             soup = BeautifulSoup(r.content, "html.parser")
             for i in soup.find_all(class_="bs-glyphicons-list"):
                 print(i.text.replace("glyphicon-", "").replace("glyphicon", "").replace("     ", "\n").replace("    ", ""))
-    elif cmd.startswith("plugin download"):
+    elif cmd.startswith("plugin install"):
         plugin = cmd.split(" ")
         if len(plugin) == 3:
             with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
@@ -381,7 +384,7 @@ exit : Quitte l'application""")
                 else:
                     print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas.")
         else:
-            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin download\" doit être suivie du nom du plugin.")
+            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin install\" doit être suivie du nom du plugin.")
     elif cmd.startswith("plugin start"):
         plugin = cmd.split(" ")
         if len(plugin) == 3:
@@ -397,20 +400,58 @@ exit : Quitte l'application""")
         plugin = cmd.split(" ")
         if len(plugin) == 3:
             if os.path.exists(f"Plugins\\{plugin[2]}.py"):
-                print("Informations sur le plugin :")
                 with codecs.open(f"Plugins\\{plugin[2]}.py", "r", "utf-8") as f:
                     info = f.read().split("\"\"\"")
                     print(info[1])
             else:
                 print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas ou n'est pas installé.")
         else:
-            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin start\" doit être suivie du nom du plugin.") 
-    elif cmd == "plugin list":
-        print("Plugins installés :")
-        for i in os.listdir("Plugins"):
-            if i.endswith(".py"):
-                print(i.replace(".py", ""))
+            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin info\" doit être suivie du nom du plugin.") 
+    elif cmd == "list plugins":
+        try:
+            os.mkdir("Plugins")
+        except FileExistsError:
+            pass
+
+        with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+            plugins_availables = json.loads(r.text)["plugins_availables"]
+
+        if os.listdir("Plugins") != []:
+            try:
+                for i in os.listdir("Plugins"):
+                    if i.endswith(".py"):
+                        if i.replace('.py', '') in plugins_availables:
+                            print(Fore.GREEN + i.replace('.py', '') + " | Vérifié")
+                        else:
+                            print(Fore.YELLOW + i.replace('.py', '') + " | Non vérifié")
+            except FileNotFoundError as e:
+                print(Fore.RED + "Une erreur inconnue est survenue.\nCode d'erreur : " + str(e))
+        else:
+            print("Aucun plugin installé.")
+    elif cmd.startswith("plugin uninstall"):
+        plugin = cmd.split(" ")
+        if len(plugin) == 3:
+            if os.path.exists(f"Plugins\\{plugin[2]}.py"):
+                os.remove(f"Plugins\\{plugin[2]}.py")
+                print(Fore.GREEN + "Plugin supprimé.")
+            else:
+                print(Fore.RED + "Erreur \"plugin\": ce plugin n'existe pas ou n'est pas installé.")
+        else:
+            print(Fore.RED + "Erreur \"plugin\": la commande \"plugin uninstall\" doit être suivie du nom du plugin.")
+    elif cmd == "check update":
+        print(Fore.YELLOW + "Vérification des mises à jour...")
+        with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+            data = json.loads(r.text)
+            if data["latest-version"] != version:
+                os.system("cls")
+                print(Fore.RED + "Mise à jour disponible !")
+                print("Version actuelle : " + version)
+                print("Version disponible : " + data["latest-version"])
+                print("Voulez-vous télécharger la mise à jour ? (O/N)")
+                if input(">").upper() == "O":
+                    webbrowser.open(f"https://github.com/automap-organization/automap/releases/download/{data['latest-version']}/automap.exe")
+            else:
+                print(Fore.GREEN + "Aucune mise à jour disponible.")
     else:
-        errorcmd = cmd.split(" ")
-        print(f"Erreur \"Cmd\": la commande {errorcmd[0]} n'existe pas ou est mal écrite.")
+        print(f"Erreur \"Cmd\": la commande {cmd} n'existe pas ou est mal écrite.")
     
