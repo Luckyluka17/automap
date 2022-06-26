@@ -34,7 +34,7 @@ except:
     os.system("pause")
     exit()
 
-version = "0.5"
+version = "0.6"
 
 os.system("cls")
 print(Fore.YELLOW + "Vérification des mises à jour...")
@@ -74,7 +74,7 @@ colorpoints = "blue"
 if data["disable-app"] == True:
     os.system("cls")
     print(Fore.RED + "L'application est désactivée temporairement.")
-    print("Pour en savoir plus, veuillez visiter le site.")
+    print(Fore.RED + "Raison :" + data["disable-app-reason"])
     os.system("pause")
     exit()
 
