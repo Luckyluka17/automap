@@ -30,3 +30,4 @@ src/config.json
 src/carte.json
 *.pyc
 Script2Exe data/
+src/setup.iss
