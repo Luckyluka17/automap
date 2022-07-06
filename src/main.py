@@ -71,14 +71,6 @@ listpoints = []
 colorterminal = "5"
 colorpoints = "blue"
 
-if data["disable-app"] == True:
-    os.system("cls")
-    print(Fore.RED + "L'application est désactivée temporairement.")
-    print(Fore.RED + "Raison :" + data["disable-app-reason"])
-    os.system("pause")
-    exit()
-
-
 if os.path.exists("config.json"):
     with open("config.json", "r") as f:
         data1 = json.loads(f.read())
