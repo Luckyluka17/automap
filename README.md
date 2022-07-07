@@ -11,3 +11,8 @@
 curl https://www.python.org/ftp/python/3.9.10/python-3.9.10-amd64.exe --output "%TMP%\python-3.9.10.exe" && "%TMP%\python-3.9.10.exe" /silent
 </code>
 <p>Le reste s'installe tout seul.</p>
+<h2>Remerciements</h2>
+<li>
+<ul>Totorejtt (testeur +)</ul>
+<ul>Polo228 (testeur)</ul>
+</li>
