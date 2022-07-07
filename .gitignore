@@ -4,7 +4,7 @@ src/output/main.exe
 src/build/main/base_library.zip
 src/build/main/main.exe.manifest
 src/main.spec
-src/Script2Exe data/
+src/Script2Exe/
 *.spec
 src/script2exe.bat
 build/main/Analysis-00.toc
@@ -29,5 +29,6 @@ src/Discord bot/
 src/config.json
 src/carte.json
 *.pyc
-Script2Exe data/
+Script2Exe/
 src/setup.iss
+*.iss
