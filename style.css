@@ -170,3 +170,14 @@ code {
     display: flex;
     justify-content: center;
 }
+
+span {
+    font-size: 20px;
+    display: inline;
+    vertical-align: middle;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+}

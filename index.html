@@ -6,9 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Automap - Accueil</title>
     <link rel="icon" type="image/ico" href="img/icon.ico">
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 48
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 </head>
 <nav>
     <a href="index.html"><img src="img/icon.ico" id="navlogo"></a>
@@ -23,11 +32,40 @@
 <center>
     <section id="banner" style="margin-top: 130px;">
         <h1>Automap</h1>
-        <p>Générez des cartes Open Street Map avec vue satellite gratuitement.</p>
+        <p>Générez des cartes Open Street Map <a class="auto-input"></a></p>
+        <script>
+            let typed = new Typed(".auto-input", {
+            strings: ["interactive", "gratuitement", "facilement", "partout", "avec une vue satellite"],
+            typeSpeed: 50,
+            backSpeed: 50,
+            loop: true
+            })
+        </script>
         <br/>
-        <a href="downloads.html#"><button type="button" style="margin-right: 12px;"><i class="fi fi-rr-download" style="font-style: normal;">  Télécharger Automap</i></button></a>
-        <a href="https://github.com/Luckyluka17/automap" target="_blank"><button type="button" style="margin-right: 12px;"><i class="fi fi-brands-github" style="font-style: normal;">  Dépôt github</i></button></a>
-        <a href="https://buymeacoffee.com/Luckyluka17" target="_blank"><button type="button" style="margin-right: 12px;"><i class="fi fi-rr-dollar" style="font-style: normal;">  Faire un don</i></button></a>
+        <a href="downloads.html#">
+            <button type="button" style="margin-right: 12px;">
+                <span class="material-symbols-outlined">
+                    file_download
+                </span>
+                Télécharger automap
+            </button>
+        </a>
+        <a href="https://github.com/Luckyluka17/automap" target="_blank">
+            <button type="button" style="margin-right: 12px;">
+                <span class="material-symbols-outlined">
+                    filter_drama
+                </span>
+                Dépôt github
+            </button>
+        </a>
+        <a href="https://buymeacoffee.com/Luckyluka17" target="_blank">
+            <button type="button" style="margin-right: 12px;">
+                <span class="material-symbols-outlined">
+                    payments
+                </span>
+                Faire un don
+            </button>
+        </a>
     </section>
     <section id="presentation" style="margin-top: 85px;">
         <h1>Presentation du logiciel</h1>
