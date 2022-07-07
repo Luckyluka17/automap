@@ -1,3 +1,4 @@
+import json
 from tkinter import ttk
 import tkinter as tk
 import os
@@ -19,10 +20,34 @@ with requests.get("https://getbootstrap.com/docs/3.3/components/") as r:
         iconlist.append(i.text.replace("glyphicon-", "").replace("glyphicon", "").replace("     ", "|").replace("    ", "").replace("  ", ""))
 iconlist = str(iconlist).replace("[", " ").replace("]", "").replace("'", "").split("|")
 
+# Récupération des informations du serveur
+with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+    data = json.loads(r.text)
+
 
 window = tk.Tk()
-version = "1.0 alpha"
+version = "1.0"
 len_markers = 0
+
+if data["latest-version"] > version:
+    window.withdraw()
+    showinfo("Nouvelle version", "Une nouvelle version du logiciel est disponible sur le github.\nNous vous recommandons de l'installer afin de bénéficier des fonctionnalités les plus récentes.")
+    window.deiconify()
+
+
+def check_updates():
+    if data["latest-version"] > version:
+        showinfo("Mises à jour", "Une nouvelle version est disponible.")
+    else:
+        showinfo("Mises à jour", "Vous possèdez la dernière version.")
+
+def startcmd():
+    try:
+        os.startfile(os.getcwd() + "\\cmd.exe")
+    except FileNotFoundError as e:
+        showerror("Erreur", str(e) + "\nVérifiez que vous avez tout les fichiers. Si le problème persiste, réinstallez automap.")
+
+
 
 def del_item():
     global len_markers
@@ -85,6 +110,7 @@ def aj_point():
     )
     bouton1.pack(pady=10)
 
+
     window1.mainloop()
 
 def create_map():
@@ -115,7 +141,12 @@ def create_map():
                     else:
                         folium.Marker([float(p[0]), float(p[1])], icon=folium.Icon(color='red')).add_to(map)
                 try:
-                    map.save(f"{entry1.get()}.html")
+                    try:
+                        os.mkdir("cartes")
+                    except:
+                        print("Can't create cartes directory.")
+                    map.save(f"{os.getcwd()}\\cartes\\{entry1.get()}.html")
+                    os.system(f"explorer {os.getcwd()}\\cartes")
                     showinfo("Succès", "Votre carte a été enregistrée !")
                 except:
                     showerror("Erreur", "La carte n'a pas pu être créée.")
@@ -147,12 +178,13 @@ menubar_file.add_command(label="Rénitialiser", command=lambda:(
     gestion_points.delete(*gestion_points.get_children()),
     entry1.delete(0, 'end')
 ))
+menubar_file.add_command(label="Vérifier les mises à jour", command=check_updates)
 menubar_file.add_separator()
 menubar_file.add_command(label="Quitter", command=window.quit)
 menubar_automap.add_command(label="Ajouter un point", command=aj_point)
 menubar_automap.add_command(label="Supprimer un point", command=del_item)
 menubar_automap.add_separator()
-menubar_automap.add_command(label="Revenir à la CMD", command=lambda:(os.startfile(os.getcwd() + "\\cmd.exe")))
+menubar_automap.add_command(label="Revenir à la CMD", command=startcmd)
 menubar_help.add_command(label="Github", command=lambda: webbrowser.open("https://github.com/automap-organization/automap"))
 menubar_help.add_command(label="Documentation", command=lambda: webbrowser.open("https://github.com/automap-organization/automap/wiki"))
 menubar_help.add_command(label="Serveur Discord", command=lambda: webbrowser.open("https://discord.gg/wwPRdFe5Ua"))

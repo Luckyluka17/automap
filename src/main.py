@@ -34,22 +34,12 @@ except:
     os.system("pause")
     exit()
 
-version = "0.6"
+version = "0.7"
 
 os.system("cls")
-print(Fore.YELLOW + "Vérification des mises à jour...")
-with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
-    data = json.loads(r.text)
-    if data["latest-version"] != version and data["disable-update-check"] == False:
-        os.system("cls")
-        print(Fore.RED + "Mise à jour disponible !")
-        print("Version actuelle : " + version)
-        print("Version disponible : " + data["latest-version"])
-        print("Voulez-vous télécharger la mise à jour ? (O/N)")
-        if input(">").upper() == "O":
-            webbrowser.open(f"https://github.com/automap-organization/automap/releases/download/{data['latest-version']}/automap.exe")
-    
-    os.system("cls")
+print(Fore.RED + "AVERTISSEMENT : L'invite de commande automap ne sera plus mise à jour. En conséquent, nous vous recommandons d'installer la dernière version d'automap sur le github.")
+os.system("pause")
+os.system("cls")
 
 if not os.name == "nt":
     os.system("clear")
