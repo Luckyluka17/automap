@@ -26,7 +26,7 @@ with requests.get("https://raw.githubusercontent.com/automap-organization/automa
 
 
 window = tk.Tk()
-version = "1.0"
+version = "1.1"
 len_markers = 0
 
 if data["latest-version"] > version:
@@ -67,16 +67,16 @@ def aj_point():
         else:
             len_markers = len_markers + 1
             if cb3.get() == "":
-                gestion_points.insert(parent='', index=len_markers, iid=len_markers, text='', values=(entry2.get(),'Aucun',len_markers))
+                gestion_points.insert(parent='', index=len_markers, iid=len_markers, text='', values=(entry2.get(),'Aucun',entry3.get()))
             else:
-                gestion_points.insert(parent='', index=len_markers, iid=len_markers, text='', values=(entry2.get(),cb3.get(),len_markers))
+                gestion_points.insert(parent='', index=len_markers, iid=len_markers, text='', values=(entry2.get(),cb3.get(),entry3.get()))
             window1.destroy()
 
     window1 = tk.Tk()
     window1.title("Ajouter un point")
     window1.iconbitmap("icon.ico")
     window1.resizable(False, False)
-    window1.geometry("300x150")
+    window1.geometry("300x200")
 
     ttk.Label(
         window1,
@@ -102,6 +102,18 @@ def aj_point():
         state="readonly"
     )
     cb3.pack()
+
+    ttk.Label(
+        window1,
+        text="Texte du popup (facultatif)",
+        font=("Calibri", 14)
+    ).pack()
+
+    entry3 = ttk.Entry(
+        window1,
+        width=40
+    )
+    entry3.pack()
 
     bouton1 = ttk.Button(
         window1,
@@ -137,9 +149,9 @@ def create_map():
                 for child in gestion_points.get_children():
                     p = gestion_points.item(child)["values"][0].replace(" ", "").split(",")
                     if gestion_points.item(child)["values"][1] != "Aucun":
-                        folium.Marker([float(p[0]), float(p[1])], icon=folium.Icon(color='red', prefix='glyphicon', icon=gestion_points.item(child)["values"][1])).add_to(map)
+                        folium.Marker([float(p[0]), float(p[1])], popup=gestion_points.item(child)["values"][2], icon=folium.Icon(color=color, prefix='glyphicon', icon=gestion_points.item(child)["values"][1])).add_to(map)
                     else:
-                        folium.Marker([float(p[0]), float(p[1])], icon=folium.Icon(color='red')).add_to(map)
+                        folium.Marker([float(p[0]), float(p[1])], icon=folium.Icon(color=color), popup=gestion_points.item(child)["values"][2]).add_to(map)
                 try:
                     try:
                         os.mkdir("cartes")
@@ -251,16 +263,16 @@ cb2.place(x=25, y=175)
 gestion_points = ttk.Treeview(
     window
 )
-gestion_points['columns']=('Coordonées', 'Icone', 'Numéro')
+gestion_points['columns']=('Coordonées', 'Icone', 'Texte popup')
 gestion_points.column('#0', width=0, stretch=False)
-gestion_points.column('Coordonées', anchor='center', width=300)
+gestion_points.column('Coordonées', anchor='center', width=250)
 gestion_points.column('Icone', anchor='center', width=100)
-gestion_points.column('Numéro', anchor='center', width=100)
+gestion_points.column('Texte popup', anchor='center', width=150)
 
 gestion_points.heading('#0', text='', anchor='center')
 gestion_points.heading('Coordonées', text='Coordonées', anchor='center')
 gestion_points.heading('Icone', text='Icone', anchor='center')
-gestion_points.heading('Numéro', text='Numéro', anchor='center')
+gestion_points.heading('Texte popup', text='Texte popup', anchor='center')
 
 gestion_points.place(x=275, y=50)
 
