@@ -1,38 +1,125 @@
 import json
-from tkinter import ttk
-import tkinter as tk
 import os
-from tkinter.messagebox import showinfo, showerror
+import tkinter as tk
 import webbrowser
+from tkinter import ttk
+from tkinter.messagebox import showerror, showinfo, showwarning
+
 import folium
 import requests
 from bs4 import BeautifulSoup
 
+try:
+    os.chdir(os.getcwd() + "/src/APP")
+except:
+    pass
 
-# os.chdir(os.getcwd() + "/src/APP")
 data = {}
 iconlist = []
 
-# Récupérer la liste des icones
-with requests.get("https://getbootstrap.com/docs/3.3/components/") as r:
-    soup = BeautifulSoup(r.content, "html.parser")
-    for i in soup.find_all(class_="bs-glyphicons-list"):
-        iconlist.append(i.text.replace("glyphicon-", "").replace("glyphicon", "").replace("     ", "|").replace("    ", "").replace("  ", ""))
-iconlist = str(iconlist).replace("[", " ").replace("]", "").replace("'", "").split("|")
-
-# Récupération des informations du serveur
-with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
-    data = json.loads(r.text)
-
 
 window = tk.Tk()
-version = "1.1"
+version = "1.2"
 len_markers = 0
 
-if data["latest-version"] > version:
+check_updates1 = tk.BooleanVar()
+open_file_directory1 = tk.BooleanVar()
+portable_mode1 = tk.BooleanVar()
+
+try:
+    # Récupérer la liste des icones
+    with requests.get("https://getbootstrap.com/docs/3.3/components/") as r:
+        soup = BeautifulSoup(r.content, "html.parser")
+        for i in soup.find_all(class_="bs-glyphicons-list"):
+            iconlist.append(i.text.replace("glyphicon-", "").replace("glyphicon", "").replace("     ", "|").replace("    ", "").replace("  ", ""))
+    iconlist = str(iconlist).replace("[", " ").replace("]", "").replace("'", "").split("|")
+
+    # Récupération des informations du serveur
+    with requests.get("https://raw.githubusercontent.com/automap-organization/automap/main/appinfo.json") as r:
+        data = json.loads(r.text)
+except requests.exceptions.ConnectionError as e:
     window.withdraw()
-    showinfo("Nouvelle version", "Une nouvelle version du logiciel est disponible sur le github.\nNous vous recommandons de l'installer afin de bénéficier des fonctionnalités les plus récentes.")
-    window.deiconify()
+    showerror("Erreur de connexion au serveur", "Le client Automap n'a pas pu ce connecter au serveur.Merci de bien vouloir réessayer.\nErreur : " + str(e))
+    window.destroy()
+
+if os.path.exists("app_settings.json"):
+    try:
+        with open("app_settings.json", "r") as f:
+            settings = json.loads(f.read())
+            f.close()
+    except json.decoder.JSONDecodeError:
+        window.withdraw()
+        showwarning("Fichier corrompu", "Le fichier où sont stockés vos paramètres est corrompu. En conséquent, vos paramètres vont être rénitialisés.")
+        window.deiconify()
+        with open("app_settings.json", "w") as f:
+            settings = {
+                "check_updates": True,
+                "open_file_directory": False,
+                "portable_mode": False,
+            }
+            json.dump(settings, f)
+            f.close()
+        with open("app_settings.json", "r") as f:
+            settings = json.loads(f.read())
+            f.close()
+    except Exception as e:
+        window.withdraw()
+        showerror("Erreur", "Une erreur inconnu c'est produite :\n"+ str(e))
+        window.deiconify()
+else:
+    with open("app_settings.json", "a") as f:
+        settings = {
+            "check_updates": True,
+            "open_file_directory": False,
+            "portable_mode": False,
+        }
+        json.dump(settings, f)
+        f.close()
+    with open("app_settings.json", "r") as f:
+        settings = json.loads(f.read())
+        f.close()
+
+def apply_settings():
+    settings2apply = {
+        "check_updates": check_updates1.get(),
+        "open_file_directory": open_file_directory1.get(),
+        "portable_mode": portable_mode1.get(),
+    }
+    with open("app_settings.json", "w") as f:
+        json.dump(settings2apply, f)
+        f.close()
+
+def reset_settings():
+    settings2apply = {
+        "check_updates": True,
+        "open_file_directory": False,
+        "portable_mode": False,
+    }
+    with open("app_settings.json", "w") as f:
+        json.dump(settings2apply, f)
+        f.close()
+    portable_mode1.set(False)
+    check_updates1.set(True)
+    open_file_directory1.set(False)
+    showinfo("Succès", "Les paramètres ont été rénitialisés.")
+
+
+check_updates = settings["check_updates"]
+check_updates1.set(settings["check_updates"])
+open_file_directory1.set(settings["open_file_directory"])
+portable_mode1.set(settings["portable_mode"])
+
+if check_updates == True:
+    if data["latest-version"] > version:
+        window.withdraw()
+        showinfo("Nouvelle version", "Une nouvelle version du logiciel est disponible sur le github.\nNous vous recommandons de l'installer afin de bénéficier des fonctionnalités les plus récentes.")
+        window.deiconify()
+
+if settings["portable_mode"] == True:
+    try:
+        os.remove("cmd.exe")
+    except:
+        print("Fichier déjà supprimé.")
 
 
 def check_updates():
@@ -156,10 +243,13 @@ def create_map():
                     try:
                         os.mkdir("cartes")
                     except:
-                        print("Can't create cartes directory.")
+                        print("Le dossier cartes est déjà présent.")
                     map.save(f"{os.getcwd()}\\cartes\\{entry1.get()}.html")
-                    os.system(f"explorer {os.getcwd()}\\cartes")
-                    showinfo("Succès", "Votre carte a été enregistrée !")
+                    showinfo("Succès", f"Votre carte a été enregistrée !")
+                    if open_file_directory1.get() == False:
+                        os.startfile(f"{os.getcwd()}\\cartes\\{entry1.get()}.html")
+                    else:
+                        os.system(f"explorer {os.getcwd()}\\cartes")
                 except:
                     showerror("Erreur", "La carte n'a pas pu être créée.")
             else:
@@ -179,14 +269,16 @@ window.resizable(False, False)
 menubar = tk.Menu(window, tearoff=0)
 menubar_file = tk.Menu(menubar, tearoff=0)
 menubar_automap = tk.Menu(menubar, tearoff=0)
+menubar_settings = tk.Menu(menubar, tearoff=0)
 menubar_theme = tk.Menu(menubar, tearoff=0)
 menubar_help = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="Fichier", menu=menubar_file)
+menubar.add_cascade(label="Paramètres", menu=menubar_settings)
 menubar.add_cascade(label="Automap", menu=menubar_automap)
 menubar.add_cascade(label="Thèmes", menu=menubar_theme)
 menubar.add_cascade(label="Aide", menu=menubar_help)
 menubar_file.add_command(label="Sauvegarder la carte", command=create_map)
-menubar_file.add_command(label="Rénitialiser", command=lambda:(
+menubar_file.add_command(label="Réinitialiser", command=lambda:(
     gestion_points.delete(*gestion_points.get_children()),
     entry1.delete(0, 'end')
 ))
@@ -195,11 +287,14 @@ menubar_file.add_separator()
 menubar_file.add_command(label="Quitter", command=window.quit)
 menubar_automap.add_command(label="Ajouter un point", command=aj_point)
 menubar_automap.add_command(label="Supprimer un point", command=del_item)
+menubar_automap.add_command(label="Créer une ligne", state="disabled")
 menubar_automap.add_separator()
-menubar_automap.add_command(label="Revenir à la CMD", command=startcmd)
-menubar_help.add_command(label="Github", command=lambda: webbrowser.open("https://github.com/automap-organization/automap"))
+if settings["portable_mode"]:
+    menubar_automap.add_command(label="Revenir à la CMD", state="disabled")
+else:
+    menubar_automap.add_command(label="Revenir à la CMD", command=startcmd)
 menubar_help.add_command(label="Documentation", command=lambda: webbrowser.open("https://github.com/automap-organization/automap/wiki"))
-menubar_help.add_command(label="Serveur Discord", command=lambda: webbrowser.open("https://discord.gg/wwPRdFe5Ua"))
+menubar_help.add_command(label="Github", command=lambda: webbrowser.open("https://github.com/automap-organization/automap"))
 menubar_theme.add_command(label="Normal", command=lambda:(
     style.theme_use("vista"),
     style.map("Treeview")
@@ -213,7 +308,12 @@ menubar_theme.add_command(label="Xpnative", command=lambda:(
     style.theme_use("xpnative"),
     style.map("Treeview")
 ))
-
+menubar_settings.add_checkbutton(label="Vérifier les mises à jour à chaque démarrage", variable=check_updates1, command=apply_settings)
+menubar_settings.add_checkbutton(label="Ouvrir l'emplacement du fichier", variable=open_file_directory1, command=apply_settings)
+menubar_settings.add_checkbutton(label="Mode portable (supression des fichiers facultatifs)", command=apply_settings, variable=portable_mode1)
+menubar_settings.add_checkbutton(label="Compatibilité Linux (bientôt disponible)", state="disabled")
+menubar_settings.add_separator()
+menubar_settings.add_command(label="Rénitialiser le fichier JSON des paramètres", command=reset_settings)
 
 ttk.Label(
     window,
