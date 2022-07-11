@@ -34,3 +34,4 @@ Script2Exe/
 src/setup.iss
 *.iss
 License.txt
+src/APP/app_settings.json
