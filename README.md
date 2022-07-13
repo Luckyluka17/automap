@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="img/logo1.png" width="75%">
+<img src="img/logo1.png" width="50%">
 <br>
 <img src="https://img.shields.io/github/repo-size/automap-organization/automap">
 <img src="https://img.shields.io/github/downloads/automap-organization/automap/total">
