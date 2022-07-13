@@ -1,15 +1,20 @@
-<p align="center">
-![](img/banner.png)
-![GitHub repo size](https://img.shields.io/github/repo-size/automap-organization/automap)
-![GitHub all releases](https://img.shields.io/github/downloads/automap-organization/automap/total)
-![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fwww.automap.tk%2F)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/automap-organization/automap)
-![GitHub contributors](https://img.shields.io/github/contributors/automap-organization/automap)
-</p>
+<center>
+<br>
+<img src="img/logo1.png" width="75%">
+<br>
+<img src="https://img.shields.io/github/repo-size/automap-organization/automap">
+<img src="https://img.shields.io/github/downloads/automap-organization/automap/total">
+<img src="https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fwww.automap.tk%2F">
+<img src="https://img.shields.io/github/commit-activity/w/automap-organization/automap">
+<img src="https://img.shields.io/github/contributors/automap-organization/automap">
+
 
 Générez gratuitement des cartes Open Street Map avec ce petit logiciel gratuit.
-## Aperçu
-![](img/capture.png)
-## Rerciements
-- Totorejtt (testeur +)
--  Polo228 (testeur)
+<h2>Aperçu</h2>
+<img src="img/capture.png">
+<h2>Remerciements</h2>
+<ul>
+    <li>Totorejtt (testeur +)</li>
+    <li>Polo228 (testeur)</li>
+</ul>
+</center>
