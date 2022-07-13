@@ -1,4 +1,4 @@
-<center>
+<p align="center">
 <br>
 <img src="img/logo1.png" width="75%">
 <br>
@@ -9,7 +9,7 @@
 <img src="https://img.shields.io/github/contributors/automap-organization/automap">
 
 
-Générez gratuitement des cartes Open Street Map avec ce petit logiciel gratuit.
+<p>Générez gratuitement des cartes Open Street Map avec ce petit logiciel gratuit.</p>
 <h2>Aperçu</h2>
 <img src="img/capture.png">
 <h2>Remerciements</h2>
@@ -17,4 +17,4 @@ Générez gratuitement des cartes Open Street Map avec ce petit logiciel gratuit
     <li>Totorejtt (testeur +)</li>
     <li>Polo228 (testeur)</li>
 </ul>
-</center>
+</p>
