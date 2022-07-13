@@ -9,11 +9,11 @@
 <img src="https://img.shields.io/github/contributors/automap-organization/automap">
 
 
-<p>Générez gratuitement des cartes Open Street Map avec ce petit logiciel gratuit. Automap vous permet de créer des cartes simplement à l'aide de quelques clics.</p>
-<h2>Aperçu</h2>
-<img src="img/capture.png">
-<h2>Remerciements</h2>
-<ul>
+<p align="center">Générez gratuitement des cartes Open Street Map avec ce petit logiciel gratuit. Automap vous permet de créer des cartes simplement à l'aide de quelques clics.</p>
+<h2 align="center">Aperçu</h2>
+<img  align="center" src="img/capture.png">
+<h2 align="center">Remerciements</h2>
+<ul align="center">
     <li>Totorejtt (testeur +)</li>
     <li>Polo228 (testeur)</li>
 </ul>
