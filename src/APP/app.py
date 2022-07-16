@@ -8,6 +8,7 @@ from tkinter.messagebox import showerror, showinfo, showwarning
 import folium
 import requests
 from bs4 import BeautifulSoup
+from pypresence import Presence
 
 try:
     os.chdir(os.getcwd() + "/src/APP")
@@ -19,12 +20,13 @@ iconlist = []
 
 
 window = tk.Tk()
-version = "1.2"
+version = "1.3"
 len_markers = 0
 
 check_updates1 = tk.BooleanVar()
 open_file_directory1 = tk.BooleanVar()
 portable_mode1 = tk.BooleanVar()
+discord_rpc1 = tk.BooleanVar()
 
 try:
     # Récupérer la liste des icones
@@ -56,6 +58,7 @@ if os.path.exists("app_settings.json"):
                 "check_updates": True,
                 "open_file_directory": False,
                 "portable_mode": False,
+                 "discord_rpc": True,
             }
             json.dump(settings, f)
             f.close()
@@ -72,6 +75,7 @@ else:
             "check_updates": True,
             "open_file_directory": False,
             "portable_mode": False,
+             "discord_rpc": True,
         }
         json.dump(settings, f)
         f.close()
@@ -84,6 +88,7 @@ def apply_settings():
         "check_updates": check_updates1.get(),
         "open_file_directory": open_file_directory1.get(),
         "portable_mode": portable_mode1.get(),
+        "discord_rpc": discord_rpc1.get(),
     }
     with open("app_settings.json", "w") as f:
         json.dump(settings2apply, f)
@@ -108,18 +113,26 @@ check_updates = settings["check_updates"]
 check_updates1.set(settings["check_updates"])
 open_file_directory1.set(settings["open_file_directory"])
 portable_mode1.set(settings["portable_mode"])
+discord_rpc1.set(settings["discord_rpc"])
+
+if settings["discord_rpc"] == True:
+    try:
+        RPC = Presence(client_id=997483901406687302)
+        RPC.connect()
+        RPC.update(
+            details="✏️ Édite une carte",
+            state=f"🖥️ Automap v{version}",
+            large_image="logo",
+            large_text="Créé par Luckyluka17"
+        )
+    except:
+        print("Discord n'est pas détecté ou n'est pas ouvert.")
 
 if check_updates == True:
     if data["latest-version"] > version:
         window.withdraw()
         showinfo("Nouvelle version", "Une nouvelle version du logiciel est disponible sur le github.\nNous vous recommandons de l'installer afin de bénéficier des fonctionnalités les plus récentes.")
         window.deiconify()
-
-if settings["portable_mode"] == True:
-    try:
-        os.remove("cmd.exe")
-    except:
-        print("Fichier déjà supprimé.")
 
 
 def check_updates():
@@ -224,7 +237,7 @@ def create_map():
                 else:
                     color = "blue"
                     
-                if cb2.get() != "Normale":
+                if cb2.get() == "Satellite":
                     tile = folium.TileLayer(
                                 tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                                 attr = 'Esri',
@@ -232,6 +245,10 @@ def create_map():
                                 overlay = False,
                                 control = True
                     ).add_to(map)
+                elif cb2.get() == "Normale (mode clair)":
+                    folium.TileLayer('cartodbpositron').add_to(map)
+                else:
+                    folium.TileLayer('cartodbdark_matter').add_to(map)
 
                 for child in gestion_points.get_children():
                     p = gestion_points.item(child)["values"][0].replace(" ", "").split(",")
@@ -263,7 +280,8 @@ style = ttk.Style()
 
 window.title("Automap GUI - v" + version)
 window.geometry("800x400")
-window.iconbitmap("icon.ico")
+if settings["portable_mode"] != True:
+    window.iconbitmap("icon.ico")
 window.resizable(False, False)
 
 menubar = tk.Menu(window, tearoff=0)
@@ -293,7 +311,7 @@ if settings["portable_mode"]:
     menubar_automap.add_command(label="Revenir à la CMD", state="disabled")
 else:
     menubar_automap.add_command(label="Revenir à la CMD", command=startcmd)
-menubar_help.add_command(label="Documentation", command=lambda: webbrowser.open("https://github.com/automap-organization/automap/wiki"))
+menubar_help.add_command(label="Documentation", command=lambda: webbrowser.open("https://docs.automap.tk"))
 menubar_help.add_command(label="Github", command=lambda: webbrowser.open("https://github.com/automap-organization/automap"))
 menubar_theme.add_command(label="Normal", command=lambda:(
     style.theme_use("vista"),
@@ -311,6 +329,7 @@ menubar_theme.add_command(label="Xpnative", command=lambda:(
 menubar_settings.add_checkbutton(label="Vérifier les mises à jour à chaque démarrage", variable=check_updates1, command=apply_settings)
 menubar_settings.add_checkbutton(label="Ouvrir l'emplacement du fichier", variable=open_file_directory1, command=apply_settings)
 menubar_settings.add_checkbutton(label="Mode portable (supression des fichiers facultatifs)", command=apply_settings, variable=portable_mode1)
+menubar_settings.add_checkbutton(label="Discord Rich Presence", command=apply_settings, variable=discord_rpc1)
 menubar_settings.add_checkbutton(label="Compatibilité Linux (bientôt disponible)", state="disabled")
 menubar_settings.add_separator()
 menubar_settings.add_command(label="Rénitialiser le fichier JSON des paramètres", command=reset_settings)
@@ -355,7 +374,7 @@ cb1.place(x=25, y=110)
 
 cb2 = ttk.Combobox(
     window,
-    values=["Normale", "Satellite"],
+    values=["Satellite", "Normale (mode clair)", "Normale (mode sombre)"],
     state="readonly"
 )
 cb2.place(x=25, y=175)
