@@ -1,5 +1,6 @@
 import json
 import os
+import time
 import tkinter as tk
 import webbrowser
 from tkinter import ttk
@@ -9,6 +10,8 @@ import folium
 import requests
 from bs4 import BeautifulSoup
 from pypresence import Presence
+
+start_time = time.time()
 
 try:
     os.chdir(os.getcwd() + "/src/APP")
@@ -20,13 +23,14 @@ iconlist = []
 
 
 window = tk.Tk()
-version = "1.3"
+version = "1.4"
 len_markers = 0
 
 check_updates1 = tk.BooleanVar()
 open_file_directory1 = tk.BooleanVar()
 portable_mode1 = tk.BooleanVar()
 discord_rpc1 = tk.BooleanVar()
+exp1 = tk.BooleanVar()
 
 try:
     # Récupérer la liste des icones
@@ -50,15 +54,14 @@ if os.path.exists("app_settings.json"):
             settings = json.loads(f.read())
             f.close()
     except json.decoder.JSONDecodeError:
-        window.withdraw()
         showwarning("Fichier corrompu", "Le fichier où sont stockés vos paramètres est corrompu. En conséquent, vos paramètres vont être rénitialisés.")
-        window.deiconify()
         with open("app_settings.json", "w") as f:
             settings = {
                 "check_updates": True,
                 "open_file_directory": False,
                 "portable_mode": False,
                  "discord_rpc": True,
+                 "exp": False,
             }
             json.dump(settings, f)
             f.close()
@@ -66,16 +69,15 @@ if os.path.exists("app_settings.json"):
             settings = json.loads(f.read())
             f.close()
     except Exception as e:
-        window.withdraw()
         showerror("Erreur", "Une erreur inconnu c'est produite :\n"+ str(e))
-        window.deiconify()
 else:
     with open("app_settings.json", "a") as f:
         settings = {
             "check_updates": True,
             "open_file_directory": False,
             "portable_mode": False,
-             "discord_rpc": True,
+            "discord_rpc": True,
+            "exp": False,
         }
         json.dump(settings, f)
         f.close()
@@ -89,6 +91,7 @@ def apply_settings():
         "open_file_directory": open_file_directory1.get(),
         "portable_mode": portable_mode1.get(),
         "discord_rpc": discord_rpc1.get(),
+        "exp": exp1.get(),
     }
     with open("app_settings.json", "w") as f:
         json.dump(settings2apply, f)
@@ -99,6 +102,8 @@ def reset_settings():
         "check_updates": True,
         "open_file_directory": False,
         "portable_mode": False,
+        "discord_rpc": True,
+        "exp": False,
     }
     with open("app_settings.json", "w") as f:
         json.dump(settings2apply, f)
@@ -106,14 +111,43 @@ def reset_settings():
     portable_mode1.set(False)
     check_updates1.set(True)
     open_file_directory1.set(False)
-    showinfo("Succès", "Les paramètres ont été rénitialisés.")
+    discord_rpc1.set(True)
+    exp1.set(False)
+    showinfo("Paramètres", "Les paramètres ont été rénitialisés.")
 
 
-check_updates = settings["check_updates"]
-check_updates1.set(settings["check_updates"])
-open_file_directory1.set(settings["open_file_directory"])
-portable_mode1.set(settings["portable_mode"])
-discord_rpc1.set(settings["discord_rpc"])
+try:
+    check_updates = settings["check_updates"]
+    check_updates1.set(settings["check_updates"])
+    open_file_directory1.set(settings["open_file_directory"])
+    portable_mode1.set(settings["portable_mode"])
+    discord_rpc1.set(settings["discord_rpc"])
+    exp1.set(settings["exp"])
+except:
+    settings2apply = {
+        "check_updates": True,
+        "open_file_directory": False,
+        "portable_mode": False,
+        "discord_rpc": True,
+        "exp": False,
+    }
+    with open("app_settings.json", "w") as f:
+        json.dump(settings2apply, f)
+        f.close()
+    portable_mode1.set(False)
+    check_updates1.set(True)
+    open_file_directory1.set(False)
+    exp1.set(False)
+
+    with open("app_settings.json", "r") as f:
+        settings = json.loads(f.read())
+        f.close()
+    
+    check_updates = settings["check_updates"]
+    check_updates1.set(settings["check_updates"])
+    open_file_directory1.set(settings["open_file_directory"])
+    portable_mode1.set(settings["portable_mode"])
+    discord_rpc1.set(settings["discord_rpc"])
 
 if settings["discord_rpc"] == True:
     try:
@@ -123,23 +157,23 @@ if settings["discord_rpc"] == True:
             details="✏️ Édite une carte",
             state=f"🖥️ Automap v{version}",
             large_image="logo",
-            large_text="Créé par Luckyluka17"
+            large_text="Créé par Luckyluka17",
+            buttons=[{"label": "Télécharger le logiciel", "url": "https://automap.tk/downloads"},
+            {"label": "Contacter Automap", "url": "mailto:contact@automap.tk"}]
         )
     except:
         print("Discord n'est pas détecté ou n'est pas ouvert.")
 
 if check_updates == True:
     if data["latest-version"] > version:
-        window.withdraw()
-        showinfo("Nouvelle version", "Une nouvelle version du logiciel est disponible sur le github.\nNous vous recommandons de l'installer afin de bénéficier des fonctionnalités les plus récentes.")
-        window.deiconify()
+        showwarning("Mises à jour", "Une nouvelle version est disponible.")
 
 
 def check_updates():
     if data["latest-version"] > version:
-        showinfo("Mises à jour", "Une nouvelle version est disponible.")
+        showwarning("Mises à jour", "Une nouvelle version est disponible.")
     else:
-        showinfo("Mises à jour", "Vous possèdez la dernière version.")
+        showinfo("Mises à jour", "Vous êtes à jour.")
 
 def startcmd():
     try:
@@ -261,7 +295,17 @@ def create_map():
                         os.mkdir("cartes")
                     except:
                         print("Le dossier cartes est déjà présent.")
+
                     map.save(f"{os.getcwd()}\\cartes\\{entry1.get()}.html")
+                    with open(f"cartes\\{entry1.get()}.html", "r") as f:
+                        file = f.read()
+                        f.close()
+                    
+                    with open(f"cartes\{entry1.get()}.html", "w") as f:
+                        file = file.replace("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />", f"<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n<title>{entry1.get()} - Automap</title>\n<link rel=\"icon\" href=\"https://raw.githubusercontent.com/automap-organization/automap/main/img/logo.png\">")
+                        f.write(file)
+                        f.close()
+
                     showinfo("Succès", f"Votre carte a été enregistrée !")
                     if open_file_directory1.get() == False:
                         os.startfile(f"{os.getcwd()}\\cartes\\{entry1.get()}.html")
@@ -296,23 +340,33 @@ menubar.add_cascade(label="Automap", menu=menubar_automap)
 menubar.add_cascade(label="Thèmes", menu=menubar_theme)
 menubar.add_cascade(label="Aide", menu=menubar_help)
 menubar_file.add_command(label="Sauvegarder la carte", command=create_map)
-menubar_file.add_command(label="Réinitialiser", command=lambda:(
+menubar_file.add_command(label="Réinitialiser tout", command=lambda:(
     gestion_points.delete(*gestion_points.get_children()),
-    entry1.delete(0, 'end')
+    entry1.delete(0, 'end'),
+    showinfo("Rénitialisation", "Tous les éléments ont été rénitialisés.")
 ))
 menubar_file.add_command(label="Vérifier les mises à jour", command=check_updates)
+menubar_file.add_command(label="À propos du logiciel", command=lambda:(showinfo("Informations sur Automap", f"Logiciel développé par Luckyluka17\nVersion actuelle : {version}\nTemps d'ouverture de la GUI : {round(end_time - start_time)}s")))
 menubar_file.add_separator()
 menubar_file.add_command(label="Quitter", command=window.quit)
 menubar_automap.add_command(label="Ajouter un point", command=aj_point)
 menubar_automap.add_command(label="Supprimer un point", command=del_item)
 menubar_automap.add_command(label="Créer une ligne", state="disabled")
 menubar_automap.add_separator()
+if data["community_status"] != "unavailable":
+    menubar_automap.add_command(label="Partager sur Automap Community", command=webbrowser.open("mailto:community@automap.tk"))
+else:
+    menubar_automap.add_command(label="Partager sur Automap Community", state="disabled")
 if settings["portable_mode"]:
     menubar_automap.add_command(label="Revenir à la CMD", state="disabled")
 else:
     menubar_automap.add_command(label="Revenir à la CMD", command=startcmd)
 menubar_help.add_command(label="Documentation", command=lambda: webbrowser.open("https://docs.automap.tk"))
+menubar_help.add_command(label="Site internet", command=lambda: webbrowser.open("https://automap.tk"))
+menubar_help.add_command(label="Status des services", command=lambda: webbrowser.open("https://status.automap.tk"))
 menubar_help.add_command(label="Github", command=lambda: webbrowser.open("https://github.com/automap-organization/automap"))
+menubar_help.add_separator()
+menubar_help.add_command(label="Notre adresse mail", command=lambda: webbrowser.open("mailto:contact@automap.tk"))
 menubar_theme.add_command(label="Normal", command=lambda:(
     style.theme_use("vista"),
     style.map("Treeview")
@@ -331,8 +385,10 @@ menubar_settings.add_checkbutton(label="Ouvrir l'emplacement du fichier", variab
 menubar_settings.add_checkbutton(label="Mode portable (supression des fichiers facultatifs)", command=apply_settings, variable=portable_mode1)
 menubar_settings.add_checkbutton(label="Discord Rich Presence", command=apply_settings, variable=discord_rpc1)
 menubar_settings.add_checkbutton(label="Compatibilité Linux (bientôt disponible)", state="disabled")
+menubar_settings.add_checkbutton(label="Activer les options expérimentales", comman=apply_settings, variable=exp1)
 menubar_settings.add_separator()
-menubar_settings.add_command(label="Rénitialiser le fichier JSON des paramètres", command=reset_settings)
+menubar_settings.add_command(label="Ouvrir le fichier JSON contenant les paramètres", command=lambda:(os.system("start app_settings.json")))
+menubar_settings.add_command(label="Rénitialiser le fichier JSON", command=reset_settings)
 
 ttk.Label(
     window,
@@ -356,7 +412,7 @@ ttk.Label(
     window,
     text="Gestionnaire de points",
     font=("Calibri", 15)
-).place(x=400, y=15)
+).place(x=430, y=15)
 
 entry1 = ttk.Entry(
     window,
@@ -409,12 +465,14 @@ del_point = ttk.Button(
 )
 del_point.place(x=420, y=290)
 
-create_map = ttk.Button(
-    window,
-    text="Créer la carte",
-    command=create_map
-)
-create_map.place(x=50, y=220)
+
+if settings["exp"] == False:
+    create_map = ttk.Button(
+        window,
+        text="Créer la carte",
+        command=create_map
+    )
+    create_map.place(x=55, y=220)
 
 frame = ttk.Frame(
     window
@@ -428,4 +486,5 @@ gestion_points.config(yscrollcommand=sb.set)
 sb.config(command=gestion_points.yview)
 
 window.config(menu=menubar)
+end_time = time.time()
 window.mainloop()
