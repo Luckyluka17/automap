@@ -162,4 +162,6 @@ function download_map() {
     }
 }
 
-window.initMap = initMap;
+function loadMap() {
+    window.initMap = initMap;
+}
