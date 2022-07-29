@@ -1,3 +1,4 @@
+import codecs
 import json
 import os
 import time
@@ -23,7 +24,7 @@ iconlist = []
 
 
 window = tk.Tk()
-version = "1.4"
+version = "1.5"
 len_markers = 0
 
 check_updates1 = tk.BooleanVar()
@@ -259,6 +260,85 @@ def aj_point():
 
     window1.mainloop()
 
+def export():
+    if not entry1.get() == "" or not entry1.get() == " ":
+        if not cb1.get() == "":
+            if not cb2.get() == "":
+                if cb1.get() == "Rouge":
+                    color = "red"
+                elif cb1.get() == "Bleu":
+                    color = "blue"
+                else:
+                    color = "green"
+                
+                kml_doc = """<?xml version =\"1.0\"?>
+<kml xmlns=\"http://earth.google.com/kml/2.2\">
+<Document>
+<Style id=\"blueicon\">
+<IconStyle>
+<Icon>
+<href>https://maps.google.com/mapfiles/ms/icons/blue-dot.png</href>
+</Icon>
+</IconStyle>
+</Style>
+<Style id=\"redicon\">
+<IconStyle>
+<Icon>
+<href>https://maps.google.com/mapfiles/ms/icons/red-dot.png</href>
+</Icon>
+</IconStyle>
+</Style>
+<Style id=\"purpleicon\">
+<IconStyle>
+<Icon>
+<href>https://maps.google.com/mapfiles/ms/icons/purple-dot.png</href>
+</Icon>
+</IconStyle>
+</Style>
+<Style id=\"greenicon\">
+<IconStyle>
+<Icon>
+<href>https://maps.google.com/mapfiles/ms/icons/green-dot.png</href>
+</Icon>
+</IconStyle>
+</Style>
+<Style id=\"yellowicon\">
+<IconStyle>
+<Icon>
+<href>https://maps.google.com/mapfiles/ms/icons/yellow-dot.png</href>
+</Icon>
+</IconStyle>
+</Style>\n"""
+                try:
+                    os.mkdir("kml")
+                except:
+                    print("Le dossier kml est déjà présent.")
+                
+                with codecs.open(f"kml\\{entry1.get()}.kml", "w", "utf-8") as f:
+                    f.write(kml_doc)
+                    for child in gestion_points.get_children():
+                        p = gestion_points.item(child)["values"][0].replace(" ", "").split(",")
+                        if gestion_points.item(child)["values"][2] == "":
+                            f.write(f"<Placemark>\n<styleUrl>#{color}icon</styleUrl>\n<Point>\n")
+                            f.write(f"<coordinates>{float(p[0])},{float(p[1])}</coordinates>\n</Point>\n</Placemark>\n")
+                        else:
+                            f.write(f"<Placemark>\n<styleUrl>#{color}icon</styleUrl>\n<Point>\n")
+                            f.write(f"<name>{gestion_points.item(child)['values'][2]}</name>\n")
+                            f.write(f"<coordinates>{float(p[1])},{float(p[0])}</coordinates>\n</Point>\n</Placemark>\n")
+                    f.write("</Document>\n</kml>")
+                    f.close()
+                    showinfo("Succès", f"Votre fichier KML a été enregistré !")
+                    if open_file_directory1.get() == False:
+                        os.startfile(f"{os.getcwd()}\\kml\\{entry1.get()}.kml")
+                    else:
+                        os.system(f"explorer {os.getcwd()}\\kml")
+            else:
+                showerror("Erreur", "Veuillez choisir le type de carte.")
+        else:
+            showerror("Erreur", "Veuillez choisir la couleur des points.")
+    else:
+        showerror("Erreur", "Veuillez choisir un nom pour la carte.")
+
 def create_map():
     map = folium.Map()
     if not entry1.get() == "" or not entry1.get() == " ":
@@ -266,20 +346,12 @@ def create_map():
             if not cb2.get() == "":
                 if cb1.get() == "Rouge":
                     color = "red"
-                elif cb2.get() == "Vert":
-                    color = "green"
-                else:
+                elif cb1.get() == "Bleu":
                     color = "blue"
+                else:
+                    color = "green"
                     
-                if cb2.get() == "Satellite":
-                    tile = folium.TileLayer(
-                                tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                                attr = 'Esri',
-                                name = 'Esri Satellite',
-                                overlay = False,
-                                control = True
-                    ).add_to(map)
-                elif cb2.get() == "Normale (mode clair)":
+                if cb2.get() == "Standard (mode clair)":
                     folium.TileLayer('cartodbpositron').add_to(map)
                 else:
                     folium.TileLayer('cartodbdark_matter').add_to(map)
@@ -339,7 +411,9 @@ menubar.add_cascade(label="Paramètres", menu=menubar_settings)
 menubar.add_cascade(label="Automap", menu=menubar_automap)
 menubar.add_cascade(label="Thèmes", menu=menubar_theme)
 menubar.add_cascade(label="Aide", menu=menubar_help)
-menubar_file.add_command(label="Sauvegarder la carte", command=create_map)
+menubar_file.add_command(label="Sauvegarder la carte en html", command=create_map)
+menubar_file.add_command(label="Exporter les points en kml", command=export)
+menubar_file.add_command(label="Démarrer Automap Editor Server", state="disabled")
 menubar_file.add_command(label="Réinitialiser tout", command=lambda:(
     gestion_points.delete(*gestion_points.get_children()),
     entry1.delete(0, 'end'),
@@ -424,14 +498,14 @@ entry1.place(x=20, y=45)
 cb1 = ttk.Combobox(
     window,
     values=["Rouge", "Vert", "Bleu"],
-    state="readonly"
+    state="readonly",
 )
 cb1.place(x=25, y=110)
 
 cb2 = ttk.Combobox(
     window,
-    values=["Satellite", "Normale (mode clair)", "Normale (mode sombre)"],
-    state="readonly"
+    values=["Standard (mode clair)", "Standard (mode sombre)"],
+    state="readonly",
 )
 cb2.place(x=25, y=175)
 
@@ -454,30 +528,41 @@ gestion_points.place(x=275, y=50)
 add_point = ttk.Button(
     window,
     text="Ajouter un point",
-    command=aj_point
+    command=aj_point,
+    cursor="hand2"
 )
 add_point.place(x=300, y=290)
 
 del_point = ttk.Button(
     window,
     text="Supprimer un point",
-    command=del_item
+    command=del_item,
+    cursor="hand2"
 )
 del_point.place(x=420, y=290)
 
 
-if settings["exp"] == False:
-    create_map = ttk.Button(
-        window,
-        text="Créer la carte",
-        command=create_map
-    )
-    create_map.place(x=55, y=220)
+
+create_map = ttk.Button(
+    window,
+    text="Créer la carte",
+    command=create_map,
+    cursor="hand2"
+)
+create_map.place(x=55, y=220)
+
+export_kml = ttk.Button(
+    window,
+    text="Exporter en KML",
+    command=export,
+    cursor="hand2"
+)
+export_kml.place(x=45, y=250)
 
 frame = ttk.Frame(
     window
 )
-frame.place(x=777, y=48)
+frame.place(x=779, y=48)
 
 sb = ttk.Scrollbar(frame, orient="vertical")
 sb.pack(side="right", fill="y")
