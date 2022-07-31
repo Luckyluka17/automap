@@ -167,7 +167,8 @@ if settings["discord_rpc"] == True:
 
 if check_updates == True:
     if data["latest-version"] > version:
-        showwarning("Mises à jour", "Une nouvelle version est disponible.")
+        os.startfile("updater.exe")
+        window.destroy()
 
 
 def check_updates():
