@@ -1,5 +1,5 @@
 {
-    "latest-version": "1.4",
+    "latest-version": "1.5",
     "disable-update-check": true,
     "dependencies": ["folium", "beautifulsoup4", "requests", "colorama"],
     "plugins_availables": ["save_map_from_automap_gui", "better_settings"],
