@@ -173,9 +173,15 @@ if check_updates == True:
 
 def check_updates():
     if data["latest-version"] > version:
+        window.withdraw()
         showwarning("Mises à jour", "Une nouvelle version est disponible.")
+        os.startfile("updater.exe")
+        window.destroy()
+        window.deiconify()
     else:
+        window.withdraw()
         showinfo("Mises à jour", "Vous êtes à jour.")
+        window.deiconify()
 
 def startcmd():
     try:
