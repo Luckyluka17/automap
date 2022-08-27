@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 html {
-    background-color: gray;
+    background-color: #737373;
     font-family: 'Lato', sans-serif;
     margin: 0;
     scroll-behavior: smooth;
-    color: rgb(74, 74, 74);
-    background-image: url('img/background.png');
+    color: white;
 }
 
 nav {
@@ -22,7 +21,7 @@ nav {
 }
 
 body {
-    color: rgb(74, 74, 74);
+    color: white;
 }
 
 .navlinks {
@@ -58,6 +57,7 @@ section {
 button {
     padding: 9px;
     border-radius: 5px;
+    margin-right: 10px;
     border: none;
     color: white;
     background-color: #333;
