@@ -4,7 +4,7 @@
 <br>
 <img src="https://img.shields.io/github/repo-size/automap-organization/automap">
 <img src="https://img.shields.io/github/downloads/automap-organization/automap/total">
-<img src="https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fwww.automap.tk%2F">
+<img src="https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https://automap-organization.github.io">
 <img src="https://img.shields.io/github/commit-activity/w/automap-organization/automap">
 <img src="https://img.shields.io/github/issues/automap-organization/automap">
 
